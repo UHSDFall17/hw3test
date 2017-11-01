@@ -1,0 +1,76 @@
+package com.UH.AnmolValabh.hw3;
+
+import org.apache.commons.cli.*;
+import static java.lang.System.exit;
+import static java.lang.System.out;
+
+public class Main {
+
+    public static void main(String[] args) {
+        // TODO code application logic here
+
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options(); 
+
+		Option optionType = Option.builder("t").required(true).longOpt("Type").hasArg().numberOfArgs(1).build();
+		Option optionKey = Option.builder("k").required(true).longOpt("Key").hasArg().numberOfArgs(1).build();
+		Option optionList = Option.builder("l").required(true).longOpt("List").hasArgs().valueSeparator(' ').build();
+		options.addOption(optionType).addOption(optionKey).addOption(optionList);
+
+
+
+        try {
+            CommandLine commandLine = parser.parse(options, args, true);
+
+            String type = commandLine.getOptionValue("type");
+            String key = commandLine.getOptionValue("key");
+            String[] array = commandLine.getOptionValues("list");
+            
+
+            if (array.length < 1 && key.isEmpty()) {
+                System.out.println("0");
+                return;
+            }
+
+            if (type.equals("i")) {
+
+                Integer[] intArray = new Integer[array.length];
+                for (int i = 0; i < array.length; i++) {
+                    intArray[i] = Integer.parseInt(array[i]);
+                }
+                int keyI = Integer.parseInt(key);
+                
+                int value = binSearch(intArray, keyI);
+                System.out.println(value);
+
+            } else if (type.equals("s")) {
+
+                int value = binSearch(array, key);
+                System.out.println(value);
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static int binSearch(Comparable[] aList, Comparable key) {
+        int left = 0, right = aList.length - 1;
+        while (right >= left) {
+            int mid = left + (right - left) / 2;
+
+            if (aList[mid].compareTo(key) == 0) {
+                return 1;
+            }
+
+            if (aList[mid].compareTo(key) < 0) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return 0;
+    }
+
+}
